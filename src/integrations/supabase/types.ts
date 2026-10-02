@@ -45,6 +45,7 @@ export type Database = {
           estado: string
           fecha_creacion: string
           fecha_envio: string | null
+          fecha_modificacion: string | null
           fecha_respuesta: string | null
           id: string
           motivo: string
@@ -69,6 +70,7 @@ export type Database = {
           estado?: string
           fecha_creacion?: string
           fecha_envio?: string | null
+          fecha_modificacion?: string | null
           fecha_respuesta?: string | null
           id?: string
           motivo: string
@@ -93,6 +95,7 @@ export type Database = {
           estado?: string
           fecha_creacion?: string
           fecha_envio?: string | null
+          fecha_modificacion?: string | null
           fecha_respuesta?: string | null
           id?: string
           motivo?: string
