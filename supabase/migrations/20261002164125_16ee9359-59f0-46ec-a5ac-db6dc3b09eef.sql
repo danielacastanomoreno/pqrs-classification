@@ -1,0 +1,1 @@
+ALTER TABLE public.pqrs ADD COLUMN fecha_modificacion timestamp with time zone;
