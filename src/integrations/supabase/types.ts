@@ -14,7 +14,111 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      areas: {
+        Row: {
+          correo: string | null
+          encargado: string
+          nombre: string
+        }
+        Insert: {
+          correo?: string | null
+          encargado: string
+          nombre: string
+        }
+        Update: {
+          correo?: string | null
+          encargado?: string
+          nombre?: string
+        }
+        Relationships: []
+      }
+      pqrs: {
+        Row: {
+          analisis_ia: string | null
+          area: string | null
+          categoria: string | null
+          confianza: number | null
+          creado_por: string
+          created_at: string
+          descripcion: string
+          encargado: string | null
+          estado: string
+          fecha_creacion: string
+          fecha_envio: string | null
+          fecha_respuesta: string | null
+          id: string
+          motivo: string
+          no_pqrs: string
+          parent_id: string | null
+          regional: string
+          requiere_revision: boolean
+          respuesta: string | null
+          tipo_pqrs: string
+          usuario: string
+        }
+        Insert: {
+          analisis_ia?: string | null
+          area?: string | null
+          categoria?: string | null
+          confianza?: number | null
+          creado_por: string
+          created_at?: string
+          descripcion: string
+          encargado?: string | null
+          estado?: string
+          fecha_creacion?: string
+          fecha_envio?: string | null
+          fecha_respuesta?: string | null
+          id?: string
+          motivo: string
+          no_pqrs: string
+          parent_id?: string | null
+          regional: string
+          requiere_revision?: boolean
+          respuesta?: string | null
+          tipo_pqrs: string
+          usuario: string
+        }
+        Update: {
+          analisis_ia?: string | null
+          area?: string | null
+          categoria?: string | null
+          confianza?: number | null
+          creado_por?: string
+          created_at?: string
+          descripcion?: string
+          encargado?: string | null
+          estado?: string
+          fecha_creacion?: string
+          fecha_envio?: string | null
+          fecha_respuesta?: string | null
+          id?: string
+          motivo?: string
+          no_pqrs?: string
+          parent_id?: string | null
+          regional?: string
+          requiere_revision?: boolean
+          respuesta?: string | null
+          tipo_pqrs?: string
+          usuario?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pqrs_area_fkey"
+            columns: ["area"]
+            isOneToOne: false
+            referencedRelation: "areas"
+            referencedColumns: ["nombre"]
+          },
+          {
+            foreignKeyName: "pqrs_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "pqrs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
