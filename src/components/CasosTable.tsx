@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AREAS, estadoClass, exportExcel, type Pqrs } from "@/lib/pqrs";
@@ -16,8 +16,8 @@ export function CasosTable({ rows, editable = false }: { rows: Pqrs[]; editable?
           <tbody>
             {rows.length === 0 && <tr><td colSpan={8} className="p-6 text-center text-muted-foreground">Sin casos</td></tr>}
             {rows.map((r) => (
-              <>
-                <tr key={r.id} className="border-t hover:bg-muted/50">
+              <Fragment key={r.id}>
+                <tr className="border-t hover:bg-muted/50">
                   <td className="px-3 py-2 font-semibold">{r.no_pqrs}</td>
                   <td className="px-3 py-2">{r.usuario}<div className="text-xs text-muted-foreground">{r.regional}</div></td>
                   <td className="px-3 py-2">{r.tipo_pqrs}</td>
@@ -30,8 +30,8 @@ export function CasosTable({ rows, editable = false }: { rows: Pqrs[]; editable?
                     <button onClick={() => setOpen(open === r.id ? null : r.id)} className="text-xs font-semibold text-primary-deep hover:underline">{open === r.id ? "Cerrar" : editable ? "Gestionar" : "Ver"}</button>
                   </td>
                 </tr>
-                {open === r.id && <tr key={r.id + "d"} className="border-t bg-secondary/40"><td colSpan={8} className="p-4"><Detalle r={r} editable={editable} /></td></tr>}
-              </>
+                {open === r.id && <tr className="border-t bg-secondary/40"><td colSpan={8} className="p-4"><Detalle r={r} editable={editable} /></td></tr>}
+              </Fragment>
             ))}
           </tbody>
         </table>
@@ -70,8 +70,10 @@ function Detalle({ r, editable }: { r: Pqrs; editable: boolean }) {
           </div>
           <textarea rows={4} className="field" placeholder="Respuesta del área…" value={resp} onChange={(e) => setResp(e.target.value)} />
           <div className="flex flex-wrap gap-2">
-            <button disabled={busy || !resp.trim()} onClick={() => upd({ respuesta: resp, estado: "Pendiente envío", fecha_respuesta: new Date().toISOString(), requiere_revision: false }, "Respuesta guardada")}
+            <button disabled={busy || !resp.trim()} onClick={() => upd({ respuesta: resp, estado: "Respondido por área", fecha_respuesta: new Date().toISOString(), requiere_revision: false }, "Respuesta guardada")}
               className="rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground disabled:opacity-40">Dar respuesta</button>
+            <button disabled={busy || !r.respuesta} onClick={() => upd({ estado: "Pendiente envío" }, "Marcado pendiente de envío")}
+              className="rounded-full border border-primary-deep px-4 py-2 text-xs font-bold text-primary-deep disabled:opacity-40">Pendiente envío</button>
             <button disabled={busy || !r.respuesta} onClick={() => upd({ estado: "Enviado", fecha_envio: new Date().toISOString() }, "Respuesta notificada")}
               className="rounded-full bg-primary-deep px-4 py-2 text-xs font-bold text-primary-foreground disabled:opacity-40">Notificar respuesta enviada</button>
           </div>
