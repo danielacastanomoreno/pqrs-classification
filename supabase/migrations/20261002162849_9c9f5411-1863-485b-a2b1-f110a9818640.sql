@@ -1,0 +1,1 @@
+ALTER TABLE public.pqrs ADD COLUMN respuesta_sugerida text;

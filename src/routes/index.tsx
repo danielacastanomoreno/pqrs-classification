@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { clasificarPqrs, type Clasificacion } from "@/lib/classify.functions";
-import { ESTADOS, REGIONALES, TIPOS, areaSlug } from "@/lib/pqrs";
+import { ESTADOS, TIPOS, areaSlug } from "@/lib/pqrs";
 import { useAreas } from "@/hooks/use-pqrs";
 
 export const Route = createFileRoute("/")({
@@ -50,7 +50,7 @@ function Index() {
         no_pqrs: multi ? `${f.no_pqrs}-${i + 1}` : f.no_pqrs,
         motivo: multi ? k.motivo : f.motivo || k.motivo,
         descripcion: multi ? k.descripcion : f.descripcion,
-        categoria: k.categoria, area: k.area, encargado: enc(k.area),
+        categoria: k.categoria, area: k.area, encargado: enc(k.area), respuesta_sugerida: k.respuesta_sugerida,
         analisis_ia: c.requiere_revision ? `${k.analisis} · Revisión: ${c.razon_revision}` : k.analisis,
         confianza: k.confianza, requiere_revision: c.requiere_revision,
         estado: f.estado,
@@ -76,7 +76,7 @@ function Index() {
           <p className="mt-1 text-sm text-muted-foreground">Registra la PQRS. La IA analiza el texto, la clasifica y la asigna al encargado del área.</p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <L label="Usuario"><input required className="field" value={f.usuario} onChange={set("usuario")} /></L>
-            <L label="Regional"><select className="field" value={f.regional} onChange={set("regional")}>{REGIONALES.map((r) => <option key={r}>{r}</option>)}</select></L>
+            <L label="Regional"><input required className="field" value={f.regional} onChange={set("regional")} placeholder="Ej. Cali" /></L>
             <L label="No.PQRS"><input required className="field" value={f.no_pqrs} onChange={set("no_pqrs")} /></L>
             <L label="Estado"><select className="field" value={f.estado} onChange={set("estado")}>{ESTADOS.map((r) => <option key={r}>{r}</option>)}</select></L>
             <L label="Tipo PQRS"><select className="field" value={f.tipo_pqrs} onChange={set("tipo_pqrs")}>{TIPOS.map((r) => <option key={r}>{r}</option>)}</select></L>
@@ -92,22 +92,32 @@ function Index() {
 
         <aside className="space-y-4">
           <div className="rounded-2xl bg-brand p-6 text-primary-foreground">
-            <h2 className="text-lg font-bold">Resultado del análisis</h2>
-            {!result && <p className="mt-2 text-sm opacity-85">Aquí verás la categoría, el área y el encargado asignado. Si la PQRS tiene varias peticiones, se separan en casos.</p>}
+            <h2 className="text-lg font-bold">PQRS clasificadas</h2>
+            {!result && <p className="mt-2 text-sm opacity-85">Aquí verás la clasificación de cada caso: categoría, área, encargado asignado y una respuesta sugerida. Si la PQRS tiene varias peticiones, se separan en casos.</p>}
             {result?.requiere_revision && <p className="mt-3 rounded-lg bg-primary-foreground/15 p-3 text-sm"><b>Pendiente de revisión:</b> {result.razon_revision}</p>}
           </div>
-          {result?.casos.map((k, i) => (
-            <div key={i} className="rounded-xl border bg-card p-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-muted-foreground">{result.casos.length > 1 ? `${result.no}-${i + 1}` : result.no}</span>
-                <span className="text-xs text-muted-foreground">Confianza {Math.round(k.confianza * 100)}%</span>
+          {result?.casos.map((k, i) => {
+            const encargado = areas?.find((a) => a.nombre === k.area)?.encargado;
+            return (
+              <div key={i} className="rounded-2xl border bg-card p-5 shadow-sm">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">{result.casos.length > 1 ? `${result.no}-${i + 1}` : result.no}</span>
+                  <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary-deep">{k.categoria}</span>
+                  <span className="rounded-full border px-3 py-1 text-xs text-muted-foreground">Confianza {Math.round(k.confianza * 100)}%</span>
+                </div>
+                <p className="mt-3 font-semibold leading-snug">{k.motivo}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{k.descripcion}</p>
+                <div className="mt-3 flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-2 text-sm">
+                  <span>Asignada a <b>Equipo de {k.area}</b> — <Link to="/areas/$area" params={{ area: areaSlug(k.area) }} className="font-semibold text-primary hover:underline">{k.area}</Link>{encargado ? ` (${encargado})` : ""}</span>
+                </div>
+                <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Análisis</p>
+                <p className="mt-1 text-sm">{k.analisis}</p>
+                <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Respuesta sugerida</p>
+                <p className="mt-1 text-sm">{k.respuesta_sugerida}</p>
+                <Link to="/dashboard" className="mt-4 inline-block rounded-full border px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10">Gestionar en el panel interno</Link>
               </div>
-              <Link to="/areas/$area" params={{ area: areaSlug(k.area) }} className="mt-1 block font-display text-lg font-bold text-primary hover:underline">{k.area}</Link>
-              <div className="text-sm font-semibold">{k.categoria}</div>
-              <p className="mt-1 text-sm text-muted-foreground">{k.analisis}</p>
-              <p className="mt-2 text-xs">Encargado: <b>{areas?.find((a) => a.nombre === k.area)?.encargado}</b></p>
-            </div>
-          ))}
+            );
+          })}
         </aside>
       </div>
     </AppShell>
