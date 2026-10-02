@@ -15,7 +15,7 @@ export type Pqrs = {
   id: string; usuario: string; regional: string; no_pqrs: string; estado: string; tipo_pqrs: string;
   motivo: string; fecha_creacion: string; creado_por: string; descripcion: string; categoria: string | null;
   area: string | null; encargado: string | null; analisis_ia: string | null; confianza: number | null;
-  requiere_revision: boolean; respuesta: string | null; fecha_respuesta: string | null;
+  requiere_revision: boolean; respuesta: string | null; respuesta_sugerida: string | null; fecha_respuesta: string | null;
   fecha_envio: string | null; parent_id: string | null; created_at: string;
 };
 
@@ -34,7 +34,7 @@ export function exportExcel(rows: Pqrs[], name = "pqrs") {
     Estado: r.estado,
     "Tipo PQRS": r.tipo_pqrs,
     Motivo: r.motivo,
-    "Fecha de creación": new Date(r.fecha_creacion).toLocaleString("es-CO"),
+    "Fecha de creación": fmtFecha(r.fecha_creacion),
     "Creado por": r.creado_por,
     Descripción: r.descripcion,
     Categoría: r.categoria ?? "",
@@ -46,6 +46,16 @@ export function exportExcel(rows: Pqrs[], name = "pqrs") {
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "PQRS");
   XLSX.writeFile(wb, `${name}.xlsx`);
+}
+
+/** dd/mm/aaaa (y hora si se pide) */
+export function fmtFecha(iso: string | null | undefined, conHora = false) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  const p = (n: number) => String(n).padStart(2, "0");
+  const base = `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
+  return conHora ? `${base} ${p(d.getHours())}:${p(d.getMinutes())}` : base;
 }
 
 export function estadoClass(e: string) {

@@ -53,6 +53,7 @@ export type Database = {
           regional: string
           requiere_revision: boolean
           respuesta: string | null
+          respuesta_sugerida: string | null
           tipo_pqrs: string
           usuario: string
         }
@@ -76,6 +77,7 @@ export type Database = {
           regional: string
           requiere_revision?: boolean
           respuesta?: string | null
+          respuesta_sugerida?: string | null
           tipo_pqrs: string
           usuario: string
         }
@@ -99,6 +101,7 @@ export type Database = {
           regional?: string
           requiere_revision?: boolean
           respuesta?: string | null
+          respuesta_sugerida?: string | null
           tipo_pqrs?: string
           usuario?: string
         }

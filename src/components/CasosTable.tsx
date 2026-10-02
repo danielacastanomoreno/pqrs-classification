@@ -1,7 +1,7 @@
 import { Fragment, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { AREAS, estadoClass, exportExcel, type Pqrs } from "@/lib/pqrs";
+import { AREAS, estadoClass, exportExcel, fmtFecha, type Pqrs } from "@/lib/pqrs";
 import { useAreas } from "@/hooks/use-pqrs";
 
 export function CasosTable({ rows, editable = false }: { rows: Pqrs[]; editable?: boolean }) {
@@ -24,7 +24,7 @@ export function CasosTable({ rows, editable = false }: { rows: Pqrs[]; editable?
                   <td className="max-w-48 truncate px-3 py-2">{r.motivo}</td>
                   <td className="px-3 py-2">{r.area}<div className="text-xs text-muted-foreground">{r.encargado}</div></td>
                   <td className="px-3 py-2"><span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${estadoClass(r.estado)}`}>{r.estado}</span></td>
-                  <td className="whitespace-nowrap px-3 py-2 text-xs">{new Date(r.fecha_creacion).toLocaleDateString("es-CO")}</td>
+                  <td className="whitespace-nowrap px-3 py-2 text-xs">{fmtFecha(r.fecha_creacion)}</td>
                   <td className="whitespace-nowrap px-3 py-2 text-right">
                     <button onClick={() => exportExcel([r], r.no_pqrs)} className="mr-2 text-xs font-semibold text-primary hover:underline">Excel</button>
                     <button onClick={() => setOpen(open === r.id ? null : r.id)} className="text-xs font-semibold text-primary-deep hover:underline">{open === r.id ? "Cerrar" : editable ? "Gestionar" : "Ver"}</button>
@@ -42,7 +42,7 @@ export function CasosTable({ rows, editable = false }: { rows: Pqrs[]; editable?
 
 function Detalle({ r, editable }: { r: Pqrs; editable: boolean }) {
   const { data: areas } = useAreas();
-  const [resp, setResp] = useState(r.respuesta ?? "");
+  const [resp, setResp] = useState(r.respuesta ?? r.respuesta_sugerida ?? "");
   const [area, setArea] = useState(r.area ?? "Servicio");
   const [busy, setBusy] = useState(false);
 
@@ -59,7 +59,13 @@ function Detalle({ r, editable }: { r: Pqrs; editable: boolean }) {
         <p><b>Descripción:</b> {r.descripcion}</p>
         <p><b>Categoría IA:</b> {r.categoria} {r.confianza != null && <span className="text-muted-foreground">({Math.round(r.confianza * 100)}%)</span>}</p>
         <p className="text-muted-foreground">{r.analisis_ia}</p>
-        <p className="text-xs">Creado por {r.creado_por}{r.fecha_respuesta && ` · Respondido ${new Date(r.fecha_respuesta).toLocaleString("es-CO")}`}{r.fecha_envio && ` · Enviado ${new Date(r.fecha_envio).toLocaleString("es-CO")}`}</p>
+        {r.respuesta_sugerida && (
+          <div className="rounded-lg bg-primary/10 p-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary-deep">Respuesta sugerida por IA</p>
+            <p className="mt-1 text-sm">{r.respuesta_sugerida}</p>
+          </div>
+        )}
+        <p className="text-xs">Creado por {r.creado_por}{r.fecha_respuesta && ` · Respondido ${fmtFecha(r.fecha_respuesta, true)}`}{r.fecha_envio && ` · Enviado ${fmtFecha(r.fecha_envio, true)}`}</p>
       </div>
       {editable && (
         <div className="space-y-2">
