@@ -22,7 +22,7 @@ export const Route = createFileRoute("/areas/$area")({
     ],
   }),
   notFoundComponent: () => <AppShell><p>Área no encontrada. <Link to="/areas" className="text-primary underline">Ver áreas</Link></p></AppShell>,
-  errorComponent: ({ error }) => <AppShell><p>{error.message}</p></AppShell>,
+  errorComponent: ({ error }) => <AppShell><p>{error instanceof Error ? error.message : "Error"}</p></AppShell>,
   component: AreaPage,
 });
 
