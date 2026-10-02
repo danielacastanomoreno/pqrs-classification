@@ -32,7 +32,7 @@ function Index() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<(Clasificacion & { no: string }) | null>(null);
   const [f, setF] = useState({
-    usuario: "", regional: "Cali", no_pqrs: `PQRS-${Date.now().toString().slice(-6)}`, estado: "Sin respuesta",
+    usuario: "", regional: "Cali", no_pqrs: `PQRS-${Date.now().toString().slice(-6)}`, estado: "Abierto",
     tipo_pqrs: "Solicitud", motivo: "", fecha_creacion: hoy(), creado_por: "", descripcion: "",
   });
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setF({ ...f, [k]: e.target.value });
@@ -53,7 +53,7 @@ function Index() {
         categoria: k.categoria, area: k.area, encargado: enc(k.area),
         analisis_ia: c.requiere_revision ? `${k.analisis} · Revisión: ${c.razon_revision}` : k.analisis,
         confianza: k.confianza, requiere_revision: c.requiere_revision,
-        estado: c.requiere_revision ? "Pendiente de revisión" : f.estado,
+        estado: f.estado,
       }));
       const { error } = await supabase.from("pqrs").insert(rows);
       if (error) throw error;

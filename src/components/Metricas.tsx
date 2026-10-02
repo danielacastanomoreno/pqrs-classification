@@ -11,12 +11,10 @@ function avg(rows: Pqrs[], from: number) {
 export function Conteos({ rows }: { rows: Pqrs[] }) {
   const c = (e: string) => rows.filter((r) => r.estado === e).length;
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+    <div className="grid gap-4 sm:grid-cols-3">
       <Stat label="Total casos" value={rows.length} />
-      <Stat label="Sin respuesta" value={c("Sin respuesta")} tone="destructive" />
-      <Stat label="Pendiente de revisión" value={c("Pendiente de revisión")} tone="warning" />
-      <Stat label="Con respuesta del área" value={c("Respondido por área")} tone="info" />
-      <Stat label="Pendiente envío" value={c("Pendiente envío")} tone="warning" />
+      <Stat label="Abiertos" value={c("Abierto")} tone="destructive" />
+      <Stat label="Cerrados" value={c("Cerrado")} />
     </div>
   );
 }

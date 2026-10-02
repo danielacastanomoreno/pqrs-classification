@@ -35,10 +35,9 @@ function Areas() {
                 <span className="rounded-full bg-secondary px-2.5 py-0.5 text-sm font-bold text-secondary-foreground">{ar.length}</span>
               </div>
               <p className="text-xs text-muted-foreground">Encargado: {areas?.find((x) => x.nombre === a)?.encargado ?? "—"}</p>
-              <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
-                <div><b className="block text-lg text-destructive">{c("Sin respuesta") + c("Pendiente de revisión")}</b>Sin resp.</div>
-                <div><b className="block text-lg text-info">{c("Respondido por área")}</b>Respondidas</div>
-                <div><b className="block text-lg text-warning-foreground">{c("Pendiente envío")}</b>Pend. envío</div>
+              <div className="mt-4 grid grid-cols-2 gap-2 text-center text-xs">
+                <div><b className="block text-lg text-destructive">{c("Abierto")}</b>Abiertos</div>
+                <div><b className="block text-lg text-primary">{c("Cerrado")}</b>Cerrados</div>
               </div>
             </Link>
           );
