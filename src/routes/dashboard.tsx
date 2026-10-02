@@ -40,7 +40,7 @@ function Dashboard() {
             <div className="mt-3 space-y-1.5">
               {AREAS.map((a) => {
                 const ar = data.filter((r) => r.area === a);
-                const pend = ar.filter((r) => r.estado === "Sin respuesta" || r.estado === "Pendiente de revisión").length;
+                const pend = ar.filter((r) => r.estado === "Abierto").length;
                 const max = Math.max(1, ...AREAS.map((x) => data.filter((r) => r.area === x).length));
                 return (
                   <Link key={a} to="/areas/$area" params={{ area: areaSlug(a) }} className="flex items-center gap-3 text-sm hover:text-primary">

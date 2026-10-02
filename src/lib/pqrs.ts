@@ -7,7 +7,7 @@ export const AREAS = [
 
 export const TIPOS = ["Solicitud", "Inconformidad", "Sugerencia", "Felicitación/Agradecimiento"] as const;
 
-export const ESTADOS = ["Sin respuesta", "Pendiente de revisión", "Respondido por área", "Pendiente envío", "Enviado"] as const;
+export const ESTADOS = ["Abierto", "Cerrado"] as const;
 
 export const REGIONALES = ["Cali", "Bogotá", "Medellín", "Barranquilla", "Bucaramanga", "Pereira", "Cartagena", "Palmira"];
 
@@ -50,10 +50,7 @@ export function exportExcel(rows: Pqrs[], name = "pqrs") {
 
 export function estadoClass(e: string) {
   switch (e) {
-    case "Sin respuesta": return "bg-destructive/10 text-destructive";
-    case "Pendiente de revisión": return "bg-warning/25 text-warning-foreground";
-    case "Respondido por área": return "bg-info/15 text-info";
-    case "Pendiente envío": return "bg-accent/40 text-accent-foreground";
+    case "Abierto": return "bg-destructive/10 text-destructive";
     default: return "bg-primary/15 text-primary-deep";
   }
 }

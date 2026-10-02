@@ -65,17 +65,17 @@ function Detalle({ r, editable }: { r: Pqrs; editable: boolean }) {
         <div className="space-y-2">
           <div className="flex gap-2">
             <select className="field" value={area} onChange={(e) => setArea(e.target.value)}>{AREAS.map((a) => <option key={a}>{a}</option>)}</select>
-            <button disabled={busy || area === r.area} onClick={() => upd({ area, encargado: areas?.find((a) => a.nombre === area)?.encargado ?? null, requiere_revision: false, estado: r.estado === "Pendiente de revisión" ? "Sin respuesta" : r.estado }, "Caso reasignado")}
+            <button disabled={busy || area === r.area} onClick={() => upd({ area, encargado: areas?.find((a) => a.nombre === area)?.encargado ?? null, requiere_revision: false }, "Caso reasignado")}
               className="whitespace-nowrap rounded-full border border-primary px-3 text-xs font-semibold text-primary disabled:opacity-40">Reasignar</button>
           </div>
           <textarea rows={4} className="field" placeholder="Respuesta del área…" value={resp} onChange={(e) => setResp(e.target.value)} />
           <div className="flex flex-wrap gap-2">
-            <button disabled={busy || !resp.trim()} onClick={() => upd({ respuesta: resp, estado: "Respondido por área", fecha_respuesta: new Date().toISOString(), requiere_revision: false }, "Respuesta guardada")}
-              className="rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground disabled:opacity-40">Dar respuesta</button>
-            <button disabled={busy || !r.respuesta} onClick={() => upd({ estado: "Pendiente envío" }, "Marcado pendiente de envío")}
-              className="rounded-full border border-primary-deep px-4 py-2 text-xs font-bold text-primary-deep disabled:opacity-40">Pendiente envío</button>
-            <button disabled={busy || !r.respuesta} onClick={() => upd({ estado: "Enviado", fecha_envio: new Date().toISOString() }, "Respuesta notificada")}
-              className="rounded-full bg-primary-deep px-4 py-2 text-xs font-bold text-primary-foreground disabled:opacity-40">Notificar respuesta enviada</button>
+            <button disabled={busy || !resp.trim()} onClick={() => upd({ respuesta: resp, estado: "Cerrado", fecha_respuesta: new Date().toISOString(), requiere_revision: false }, "Respuesta guardada y caso cerrado")}
+              className="rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground disabled:opacity-40">Responder y cerrar</button>
+            {r.estado === "Cerrado" && (
+              <button disabled={busy} onClick={() => upd({ estado: "Abierto" }, "Caso reabierto")}
+                className="rounded-full border border-primary-deep px-4 py-2 text-xs font-bold text-primary-deep disabled:opacity-40">Reabrir</button>
+            )}
           </div>
         </div>
       )}
